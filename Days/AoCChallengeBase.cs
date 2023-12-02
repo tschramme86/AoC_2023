@@ -40,10 +40,10 @@ namespace AoC2023.Days
             var result = SolvePartOneInternal(testData);
             if(!object.Equals(result, this.ExpectedTestResultPartOne))
             {
-                Console.WriteLine($"Day {Day:D2}: Test data failed for Part One (expected {this.ExpectedTestResultPartOne} but got {result})");
+                Console.WriteLine($"Day {Day}: Test data failed for Part One (expected {this.ExpectedTestResultPartOne} but got {result})");
                 return false;
             }
-            Console.WriteLine($"Day {Day:D2}: Test data passed for Part One, result = {result}");
+            Console.WriteLine($"Day {Day}: Test data passed for Part One, result = {result}");
             return true;
         }
 
@@ -53,10 +53,10 @@ namespace AoC2023.Days
             var result = SolvePartTwoInternal(testData);
             if(!object.Equals(result, this.ExpectedTestResultPartTwo))
             {
-                Console.WriteLine($"Day {Day:D2}: Test data failed for Part Two (expected {this.ExpectedTestResultPartTwo} but got {result})");
+                Console.WriteLine($"Day {Day}: Test data failed for Part Two (expected {this.ExpectedTestResultPartTwo} but got {result})");
                 return false;
             }
-            Console.WriteLine($"Day {Day:D2}: Test data passed for Part Two, result = {result}");
+            Console.WriteLine($"Day {Day}: Test data passed for Part Two, result = {result}");
             return true;
         }
 
@@ -64,14 +64,14 @@ namespace AoC2023.Days
         {
             var inputData = GetInputData();
             var result = SolvePartOneInternal(inputData);
-            Console.WriteLine($"Day {Day:D2}: Part One result = {result}");
+            Console.WriteLine($"Day {Day}: Part One result = {result}");
         }
 
         public void SolvePartTwo()
         {
             var inputData = GetInputData();
             var result = SolvePartTwoInternal(inputData);
-            Console.WriteLine($"Day {Day:D2}: Part Two result = {result}");
+            Console.WriteLine($"Day {Day}: Part Two result = {result}");
         }
 
         protected virtual object SolvePartOneInternal(string[] inputData)

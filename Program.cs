@@ -40,7 +40,7 @@
                     var challenge = challenges.FirstOrDefault(c => c.Day == day);
                     if(challenge != null)
                     {
-                        Console.WriteLine($"Running challenge for day {day} ({challenge.Name})");
+                        Console.WriteLine($"Running challenge for Day {day} ({challenge.Name})");
                         Console.WriteLine();
                         if(challenge.TestPartOne())
                         {
