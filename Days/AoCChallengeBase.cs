@@ -15,6 +15,8 @@ namespace AoC2023.Days
         protected virtual object? ExpectedTestResultPartTwo { get; } = null;
         protected virtual bool ExtraTestDataPartTwo { get; } = false;
 
+        protected bool IsOnTestData { get; private set; } = false;
+
         protected virtual string[] GetTestDataPartOne()
         {
             return System.IO.File.ReadAllLines($"Days/Day{Day:D2}/d{Day:D2}_input_test.txt");
@@ -36,6 +38,8 @@ namespace AoC2023.Days
 
         public bool TestPartOne()
         {
+            this.IsOnTestData = true;
+
             var testData = GetTestDataPartOne();
             var result = SolvePartOneInternal(testData);
             if(!object.Equals(result, this.ExpectedTestResultPartOne))
@@ -49,6 +53,8 @@ namespace AoC2023.Days
 
         public bool TestPartTwo()
         {
+            this.IsOnTestData = true;
+
             var testData = GetTestDataPartTwo();
             var result = SolvePartTwoInternal(testData);
             if(!object.Equals(result, this.ExpectedTestResultPartTwo))
@@ -62,6 +68,8 @@ namespace AoC2023.Days
 
         public void SolvePartOne()
         {
+            this.IsOnTestData = false;
+
             var inputData = GetInputData();
             var result = SolvePartOneInternal(inputData);
             Console.WriteLine($"Day {Day}: Part One result = {result}");
@@ -69,6 +77,8 @@ namespace AoC2023.Days
 
         public void SolvePartTwo()
         {
+            this.IsOnTestData = false;
+
             var inputData = GetInputData();
             var result = SolvePartTwoInternal(inputData);
             Console.WriteLine($"Day {Day}: Part Two result = {result}");
