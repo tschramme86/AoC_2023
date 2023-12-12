@@ -6,7 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="Google.OrTools" Version="9.8.3296" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="Days\Day01\d01_input.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
