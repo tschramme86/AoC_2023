@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using Google.OrTools.Sat;
 
 namespace AoC2023.Days.Day12
@@ -54,7 +55,7 @@ namespace AoC2023.Days.Day12
 
             public void PrintStatus()
             {
-                Console.Write($"\rSolving row {this._springRow.Index}, solutions so far: {this._solution_count}");
+                // Console.Write($"\rSolving row {this._springRow.Index}, solutions so far: {this._solution_count}");
             }
 
             private int _solution_count;
@@ -85,15 +86,31 @@ namespace AoC2023.Days.Day12
 
         protected override object SolvePartTwoInternal(string[] inputData)
         {
-            var possibleArrangements = 0;
+            var possibleArrangements = new List<int>();
             var idx = 0;
+
+            var rows = new List<SpringRow>();
             foreach (var line in inputData)
             {
                 var springRow = this.ParseSpringRow(line, true);
                 springRow.Index = idx++;
-                possibleArrangements += this.SolveSpringRow(springRow);
+                rows.Add(springRow);
             }
-            return possibleArrangements;
+
+            Parallel.ForEach(rows, new ParallelOptions { MaxDegreeOfParallelism = 32 } , sr =>
+            {
+                var arrangements = this.SolveSpringRow(sr);
+                lock(possibleArrangements)
+                {
+                    possibleArrangements.Add(arrangements);
+                    var count = possibleArrangements.Count;
+                    if (count % 10 == 0)
+                        Console.Write($"\rSolved {count} rows so far...");
+                }
+            });
+            Console.WriteLine();
+
+            return possibleArrangements.Sum();
         }
 
         private int SolveSpringRow(SpringRow sr)
@@ -176,7 +193,7 @@ namespace AoC2023.Days.Day12
             var solutionStatus = solver.Solve(model, solutionCallback);
             
             solutionCallback.PrintStatus();
-            Console.WriteLine();
+            // Console.WriteLine();
 
             return solutionCallback.SolutionCount();
         }
