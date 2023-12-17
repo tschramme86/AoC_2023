@@ -93,5 +93,18 @@ namespace AoC2023.Days
         {
             return -1;
         }
+
+        protected char[,] MapInput(string[] inputData)
+        {
+            var result = new char[inputData[0].Length, inputData.Length];
+            for (int y = 0; y < inputData.Length; y++)
+            {
+                for (int x = 0; x < inputData[y].Length; x++)
+                {
+                    result[x, y] = inputData[y][x];
+                }
+            }
+            return result;
+        }
     }
 }
