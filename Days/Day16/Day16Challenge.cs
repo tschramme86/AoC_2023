@@ -186,10 +186,5 @@ namespace AoC2023.Days.Day16
             } while (heads.Count > 0);
             return hitTiles.Count;
         }
-
-        private (int x, int y) AddP((int x, int y) a, (int x, int y) b)
-        {
-            return (a.x + b.x, a.y + b.y);
-        }
     }
 }

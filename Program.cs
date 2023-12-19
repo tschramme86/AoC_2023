@@ -42,11 +42,19 @@
                     {
                         Console.WriteLine($"Running challenge for Day {day} ({challenge.Name})");
                         Console.WriteLine();
-                        if(challenge.TestPartOne())
+                        if(challenge.SkipPartOne)
                         {
-                            challenge.SolvePartOne();
+                            Console.WriteLine("Skipping Part One");
                         }
-                        if(challenge.TestPartTwo())
+                        else
+                        {
+                            if (challenge.TestPartOne())
+                            {
+                                challenge.SolvePartOne();
+                            }
+                        }
+
+                        if (challenge.TestPartTwo())
                         {
                             challenge.SolvePartTwo();
                         }

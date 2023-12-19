@@ -11,6 +11,8 @@ namespace AoC2023.Days
         public virtual int Day { get; }
         public virtual string Name { get; } = string.Empty;
 
+        public virtual bool SkipPartOne { get; } = false;
+
         protected virtual object? ExpectedTestResultPartOne { get; } = null;
         protected virtual object? ExpectedTestResultPartTwo { get; } = null;
         protected virtual bool ExtraTestDataPartTwo { get; } = false;
@@ -105,6 +107,24 @@ namespace AoC2023.Days
                 }
             }
             return result;
+        }
+
+        protected T[,] MapInput<T>(string[] inputData, Func<char, T> mapFunc)
+        {
+            var result = new T[inputData[0].Length, inputData.Length];
+            for (int y = 0; y < inputData.Length; y++)
+            {
+                for (int x = 0; x < inputData[y].Length; x++)
+                {
+                    result[x, y] = mapFunc(inputData[y][x]);
+                }
+            }
+            return result;
+        }
+
+        protected (int x, int y) AddP((int x, int y) p1, (int x, int y) p2)
+        {
+            return (p1.x + p2.x, p1.y + p2.y);
         }
     }
 }

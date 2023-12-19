@@ -209,7 +209,7 @@ namespace AoC2023.Days.Day10
             var loopFound = false;
             do
             {
-                var nextPos = this.Add(currentPos, this._directions[nextDirection]);
+                var nextPos = this.AddP(currentPos, this._directions[nextDirection]);
                 if (nextPos == startPos)
                 {
                     loop.Add(nextPos);
@@ -242,11 +242,6 @@ namespace AoC2023.Days.Day10
             if(loopFound)
                 return loop;
             return null;
-        }
-
-        private (int x, int y) Add((int x, int y) a, (int x, int y) b)
-        {
-            return (a.x + b.x, a.y + b.y);
         }
 
         private void ReadMaze(string[] inputData)

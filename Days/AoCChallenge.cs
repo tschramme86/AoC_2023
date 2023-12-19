@@ -14,5 +14,6 @@ namespace AoC2023.Days
         bool TestPartTwo();
         void SolvePartOne();
         void SolvePartTwo();
+        bool SkipPartOne { get; }
     }
 }
