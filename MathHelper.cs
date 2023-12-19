@@ -20,4 +20,12 @@ public static class MathHelpers
     
     public static T LeastCommonMultiple<T>(this IEnumerable<T> values) where T : INumber<T>
         => values.Aggregate(LeastCommonMultiple);
+
+    public static bool IsBetween<T>(this T value, T v1, T v2) where T : INumber<T>
+    {
+        var min = v1 < v2 ? v1 : v2;
+        var max = v1 > v2 ? v1 : v2;
+
+        return value >= min && value <= max;
+    }
 }
