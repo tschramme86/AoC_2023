@@ -69,7 +69,7 @@ namespace AoC2023.Days.Day12
 
         protected override object? ExpectedTestResultPartOne => 21;
 
-        protected override object? ExpectedTestResultPartTwo => 525152;
+        protected override object? ExpectedTestResultPartTwo => 525152L;
 
         protected override object SolvePartOneInternal(string[] inputData)
         {
@@ -79,14 +79,14 @@ namespace AoC2023.Days.Day12
             {
                 var springRow = this.ParseSpringRow(line, false);
                 springRow.Index = idx++;
-                possibleArrangements += this.SolveSpringRow(springRow);
+                possibleArrangements += this.SolveSpringRowSATSolver(springRow);
             }
             return possibleArrangements;
         }
 
         protected override object SolvePartTwoInternal(string[] inputData)
         {
-            var possibleArrangements = new List<int>();
+            var possibleArrangements = new List<long>();
             var idx = 0;
 
             var rows = new List<SpringRow>();
@@ -95,25 +95,58 @@ namespace AoC2023.Days.Day12
                 var springRow = this.ParseSpringRow(line, true);
                 springRow.Index = idx++;
                 rows.Add(springRow);
-            }
 
-            Parallel.ForEach(rows, new ParallelOptions { MaxDegreeOfParallelism = 32 } , sr =>
-            {
-                var arrangements = this.SolveSpringRow(sr);
-                lock(possibleArrangements)
-                {
-                    possibleArrangements.Add(arrangements);
-                    var count = possibleArrangements.Count;
-                    if (count % 10 == 0)
-                        Console.Write($"\rSolved {count} rows so far...");
-                }
-            });
-            Console.WriteLine();
+                possibleArrangements.Add(this.GetPossibleArrangements(springRow.Springs, springRow.SpringGroups.ToArray()));
+            }
 
             return possibleArrangements.Sum();
         }
 
-        private int SolveSpringRow(SpringRow sr)
+        /// <summary>
+        /// Adapted from: https://github.com/joeleisner/advent-of-code-2023/blob/main/days/12/mod.ts
+        /// </summary>
+        private Dictionary<string, long> _cache = new();
+        private long GetPossibleArrangements(SpringCondition[] conditions, int[] groups)
+        {
+            if(conditions.Length == 0)
+                return groups.Length > 0 ? 0 : 1;
+
+            if(groups.Length == 0) 
+                return conditions.Any(s => s == SpringCondition.Damaged) ? 0 : 1;
+            
+            var key = GetKey(conditions, groups);
+            if(this._cache.ContainsKey(key))
+                return this._cache[key];
+
+            var result = 0L;
+
+            var condition = conditions[0];
+            if (condition == SpringCondition.Operational || condition == SpringCondition.Unknown)
+            {
+                result += this.GetPossibleArrangements(conditions.Skip(1).ToArray(), groups);
+            }
+
+            var group = groups[0];
+            if(condition == SpringCondition.Damaged || condition == SpringCondition.Unknown)
+            {
+                if(group <= conditions.Length &&
+                    !conditions.Take(group).Any(c => c == SpringCondition.Operational) &&
+                    (group == conditions.Length || conditions[group] != SpringCondition.Damaged))
+                {
+                    result += this.GetPossibleArrangements(conditions.Skip(group + 1).ToArray(), groups.Skip(1).ToArray());
+                }
+            }
+
+            this._cache.Add(key, result);
+            return result;
+        }
+
+        private static string GetKey(SpringCondition[] conditions, int[] groups)
+        {
+            return $"{string.Join(',', conditions)}|{string.Join(',', groups)}";
+        }
+
+        private int SolveSpringRowSATSolver(SpringRow sr)
         {
             sr.Solutions.Clear();
             var model = new CpModel();
