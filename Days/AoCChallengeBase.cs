@@ -109,6 +109,19 @@ namespace AoC2023.Days
             return result;
         }
 
+        protected T[,] MapInput<T>(string[] inputData, Func<char, (int x, int y), T> mapFunc)
+        {
+            var result = new T[inputData[0].Length, inputData.Length];
+            for (int y = 0; y < inputData.Length; y++)
+            {
+                for (int x = 0; x < inputData[y].Length; x++)
+                {
+                    result[x, y] = mapFunc(inputData[y][x], (x,y));
+                }
+            }
+            return result;
+        }
+
         protected T[,] MapInput<T>(string[] inputData, Func<char, T> mapFunc)
         {
             var result = new T[inputData[0].Length, inputData.Length];
@@ -121,6 +134,7 @@ namespace AoC2023.Days
             }
             return result;
         }
+
 
         protected (int x, int y) AddP((int x, int y) p1, (int x, int y) p2)
         {
