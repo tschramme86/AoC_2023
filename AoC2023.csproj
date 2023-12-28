@@ -8,6 +8,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Google.OrTools" Version="9.8.3296" />
+    <PackageReference Include="Microsoft.Z3" Version="4.12.2" />
+    <PackageReference Include="Microsoft.Z3.x86" Version="4.12.2" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Days\Day01\d01_input.txt">
@@ -155,6 +157,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Days\Day23\d23_input_test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Days\Day24\d24_input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Days\Day24\d24_input_test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Days\Day25\d25_input.txt">

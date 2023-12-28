@@ -28,4 +28,16 @@ public static class MathHelpers
 
         return value >= min && value <= max;
     }
+
+    public static (double x, double y, double z) Normalize((double x, double y, double z) v)
+    {
+        var len = Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        return (x: (v.x / len), y: (v.y / len), z:(v.z / len));
+    }
+
+    public static (double x, double y, double z) Multiply3D((double x, double y, double z) v, double factor)
+        => (v.x * factor, v.y * factor, v.z * factor);
+
+    public static (double x, double y, double z) Add3D((double x, double y, double z) v1, (double x, double y, double z) v2)
+        => (v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 }
