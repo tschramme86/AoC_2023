@@ -49,6 +49,7 @@ namespace AoC2023.Days.Day23
                 this.Add(nextWayTile);
 
                 this._previousCount = previous._previousCount + previous.Tiles.Count;
+                this.Level = previous.Level + 1;
             }
 
             public bool CanAdd(Tile tile)
@@ -66,6 +67,8 @@ namespace AoC2023.Days.Day23
             }
 
             public int Count => this.Tiles.Count + this._previousCount;
+
+            public int Level { get; private set; }
 
             public Hydra? Previous { get; set; }
 
@@ -131,6 +134,7 @@ namespace AoC2023.Days.Day23
 
         private List<Tile>? FindLongestWay()
         {
+            var lwLock = new object();
             List<Tile>? longestWay = null;
 
             void fnIterateWay(Hydra way, Tile tile)
@@ -142,10 +146,13 @@ namespace AoC2023.Days.Day23
                 if (tile.IsEndPosition)
                 {
                     var w = newWay.GetFullWay();
-                    if(longestWay == null || w.Count > longestWay.Count)
+                    lock (lwLock)
                     {
-                        longestWay = w;
-                        System.Diagnostics.Debug.WriteLine("Longest way so far: " + longestWay.Count);
+                        if (longestWay == null || w.Count > longestWay.Count)
+                        {
+                            longestWay = w;
+                            System.Diagnostics.Debug.WriteLine("Longest way so far: " + longestWay.Count);
+                        }
                     }
                     return;
                 }
@@ -172,9 +179,19 @@ namespace AoC2023.Days.Day23
                     possibleNext.AddRange(newWay.LastAdded.Neighbours.Where(n => n != newWay.ComingFrom));
                 }
 
-                foreach (var neighbour in possibleNext)
+                if (newWay.Level < 8)
                 {
-                    fnIterateWay(newWay, neighbour);
+                    Parallel.ForEach(possibleNext, (neighbour) =>
+                    {
+                        fnIterateWay(newWay, neighbour);
+                    });
+                }
+                else
+                {
+                    foreach (var neighbour in possibleNext)
+                    {
+                        fnIterateWay(newWay, neighbour);
+                    }
                 }
             }
 
