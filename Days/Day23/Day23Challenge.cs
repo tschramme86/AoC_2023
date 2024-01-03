@@ -15,6 +15,8 @@ namespace AoC2023.Days.Day23
             public int X { get; set; }
             public int Y { get; set; }
 
+            public bool IsEndPosition { get; set; } = false;
+
             public (int x, int y) Position => (this.X, this.Y);
 
             public Tile[] Neighbours { get; set; } = new Tile[0];
@@ -26,6 +28,8 @@ namespace AoC2023.Days.Day23
 
         class Hydra
         {
+            private int _previousCount = 0;
+
             public Hydra(int totalTiles)
             {
                 this._contains = new bool[totalTiles];
@@ -43,6 +47,8 @@ namespace AoC2023.Days.Day23
                 this.LastAdded = previous.LastAdded;
                 this.ComingFrom = previous.ComingFrom;
                 this.Add(nextWayTile);
+
+                this._previousCount = previous._previousCount + previous.Tiles.Count;
             }
 
             public bool CanAdd(Tile tile)
@@ -59,11 +65,11 @@ namespace AoC2023.Days.Day23
                 this.LastAdded = tile;
             }
 
-            public int Count => this.Tiles.Count + (this.Previous?.Count ?? 0);
+            public int Count => this.Tiles.Count + this._previousCount;
 
             public Hydra? Previous { get; set; }
 
-            public List<Tile> Tiles { get; set; } = new List<Tile>();
+            public List<Tile> Tiles { get; private set; } = new List<Tile>(64);
 
             public Tile? LastAdded { get; private set; }
             public Tile? ComingFrom { get; private set; }
@@ -133,7 +139,7 @@ namespace AoC2023.Days.Day23
 
                 var newWay = new Hydra(way, tile);
 
-                if (tile.Position == this._endPosition)
+                if (tile.IsEndPosition)
                 {
                     var w = newWay.GetFullWay();
                     if(longestWay == null || w.Count > longestWay.Count)
@@ -144,14 +150,15 @@ namespace AoC2023.Days.Day23
                     return;
                 }
 
-                var possibleNext = newWay.Count == 1 ? tile.Neighbours.ToList() 
-                    : tile.Neighbours.Where(n => n != newWay.ComingFrom).ToList();
+                var possibleNext = new List<Tile>(4);
+                if (newWay.Count == 1) possibleNext.AddRange(tile.Neighbours);
+                else possibleNext.AddRange(tile.Neighbours.Where(n => n != newWay.ComingFrom));
 
                 while(possibleNext.Count == 1)
                 {
                     if (!newWay.CanAdd(possibleNext[0])) return;
                     newWay.Add(possibleNext[0]);
-                    if (newWay.LastAdded!.Position == this._endPosition)
+                    if (newWay.LastAdded!.IsEndPosition)
                     {
                         var w = newWay.GetFullWay();
                         if (longestWay == null || w.Count > longestWay.Count)
@@ -161,7 +168,8 @@ namespace AoC2023.Days.Day23
                         }
                         return;
                     }
-                    possibleNext = newWay.LastAdded.Neighbours.Where(n => n != newWay.ComingFrom).ToList();
+                    possibleNext.Clear();
+                    possibleNext.AddRange(newWay.LastAdded.Neighbours.Where(n => n != newWay.ComingFrom));
                 }
 
                 foreach (var neighbour in possibleNext)
@@ -227,6 +235,7 @@ namespace AoC2023.Days.Day23
                 tile.Neighbours = neighbours.ToArray();
                 tile.IsSlope = isSlope;
                 tile.IsPassage = tile.Neighbours.Length == 2 && ((hasUp && hasDown) || (hasLeft && hasRight));
+                tile.IsEndPosition = tile.Position == this._endPosition;
             }   
         }
     }
